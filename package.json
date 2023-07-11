@@ -10,11 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.29.19",
+    "@tanstack/router": "^0.0.1-beta.104",
     "cva": "npm:class-variance-authority@^0.6.1",
     "echarts": "^5.4.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-query": "^3.39.3"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.4.1",
