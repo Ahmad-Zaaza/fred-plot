@@ -4,7 +4,7 @@ import {
   UseQueryOptions,
   QueryFunctionContext,
 } from "@tanstack/react-query";
-import { TSeriesId } from "./fred.types";
+import { IObservationsResponse, TSeriesId } from "./fred.types";
 
 export const fredQueryKeys = {
   all: [{ scope: "plots" }] as const,
@@ -17,9 +17,12 @@ export const fredQueryKeys = {
 async function getObservations({
   queryKey: [{ series_id }],
 }: QueryFunctionContext<ReturnType<(typeof fredQueryKeys)["observations"]>>) {
-  const res = await httpClient.get("/series/observations", {
+  const res = await httpClient.get<IObservationsResponse>("data.json", {
     params: { series_id },
   });
+  // const res = await httpClient.get("/series/observations", {
+  //   params: { series_id },
+  // });
 
   return res.data;
 }
@@ -28,9 +31,22 @@ interface IGetObservationsProps {
   series_id: TSeriesId;
 }
 
-export const useGetObservations = (
+export const useGetObservations = <
+  SelectData = IObservationsResponse,
+  Error = unknown
+>(
   { series_id }: IGetObservationsProps,
-  options?: UseQueryOptions
+  options?: UseQueryOptions<
+    IObservationsResponse,
+    Error,
+    SelectData,
+    ReturnType<(typeof fredQueryKeys)["observations"]>
+  >
 ) => {
-  return useQuery(fredQueryKeys.observations({ series_id }), getObservations);
+  return useQuery<
+    IObservationsResponse,
+    Error,
+    SelectData,
+    ReturnType<(typeof fredQueryKeys)["observations"]>
+  >(fredQueryKeys.observations({ series_id }), getObservations, options);
 };
