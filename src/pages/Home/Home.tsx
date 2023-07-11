@@ -1,6 +1,6 @@
+import T10Y2YLineChart from "@/components/Charts/T10Y2YLineChart";
 import { useGetObservations } from "@/hooks/data/fred/fredQueries.hooks";
-import { Button } from "@/ui/Button";
-import { Text } from "@/ui/Text";
+import { Box } from "@/ui/Box";
 
 const Home = () => {
   const { data } = useGetObservations({ series_id: "T10Y2Y" });
@@ -8,8 +8,9 @@ const Home = () => {
   console.log({ data });
   return (
     <div>
-      <Text variant="displayLarge">Hello</Text>
-      <Button>Hello</Button>
+      <Box h="500px">
+        {data && <T10Y2YLineChart observations={data.observations} />}
+      </Box>
     </div>
   );
 };
