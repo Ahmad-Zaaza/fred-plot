@@ -7,7 +7,7 @@ interface IProps {
   observations: IObservation[];
 }
 
-const T10Y2YLineChart = ({ observations }: IProps) => {
+const GDPCABarChart = ({ observations }: IProps) => {
   const options: EChartsOption = useMemo(() => {
     return {
       tooltip: {
@@ -31,25 +31,25 @@ const T10Y2YLineChart = ({ observations }: IProps) => {
       dataZoom: [
         {
           type: "inside",
-          start: 50,
-          end: 100,
+          // start: 0,
+          // end: 100,
         },
-        { type: "slider", start: 50, end: 100 },
+        { type: "slider" },
       ],
 
       series: [
         {
-          data: observations.map((s) => [+new Date(s["date"]), s["value"]]),
-          type: "line",
-          symbol: "none",
-          areaStyle: {},
-          smooth: true,
-          markPoint: {
-            data: [
-              { type: "max", name: "Max" },
-              { type: "min", name: "Min" },
-            ],
-          },
+          data: observations.map((s) => [+new Date(s["date"]), +s["value"]]),
+          type: "bar",
+          // symbol: "none",
+          // areaStyle: {},
+          // smooth: true,
+          // markPoint: {
+          //   data: [
+          //     { type: "max", name: "Max" },
+          //     { type: "min", name: "Min" },
+          //   ],
+          // },
         },
       ],
     };
@@ -61,4 +61,4 @@ const T10Y2YLineChart = ({ observations }: IProps) => {
   );
 };
 
-export default T10Y2YLineChart;
+export default GDPCABarChart;

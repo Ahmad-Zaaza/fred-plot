@@ -17,9 +17,16 @@ export const fredQueryKeys = {
 async function getObservations({
   queryKey: [{ series_id }],
 }: QueryFunctionContext<ReturnType<(typeof fredQueryKeys)["observations"]>>) {
-  const res = await httpClient.get<IObservationsResponse>("data.json", {
-    params: { series_id },
-  });
+  const dataSource = {
+    T10Y2Y: "data.json",
+    GDPCA: "GDPCA.json",
+  };
+  const res = await httpClient.get<IObservationsResponse>(
+    dataSource[series_id],
+    {
+      params: { series_id },
+    }
+  );
   // const res = await httpClient.get("/series/observations", {
   //   params: { series_id },
   // });
