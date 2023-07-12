@@ -24,7 +24,7 @@ const Chart = ({ options }: { options: EChartsOption }) => {
       ...options,
     });
     if (resizeObserver) resizeObserver.observe(ref.current as HTMLElement);
-  }, [PrimaryColor, options, resizeObserver]);
+  }, [PrimaryColor, options]);
   return <div ref={ref} style={{ height: "100%", width: "100%" }} />;
 };
 

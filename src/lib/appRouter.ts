@@ -1,4 +1,4 @@
-import Home from "@/pages/Home/Home";
+import Home from "@/pages/home/Home";
 import { RootRoute, Route, Router } from "@tanstack/router";
 
 export const rootRoute = new RootRoute();
