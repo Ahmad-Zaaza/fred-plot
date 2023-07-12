@@ -4,7 +4,7 @@ import {
   UseQueryOptions,
   QueryFunctionContext,
 } from "@tanstack/react-query";
-import { IObservation, IObservationsResponse, TSeriesId } from "./fred.types";
+import { IObservationsResponse, TSeriesId } from "./fred.types";
 
 export const fredQueryKeys = {
   all: [{ scope: "plots" }] as const,
@@ -34,11 +34,7 @@ async function getObservationsById({
   return res.data;
 }
 
-async function DGS10minusT10YIEObservations({
-  queryKey
-}: QueryFunctionContext<ReturnType<(typeof fredQueryKeys)["DGS10-T10YIE"]>>) {
-
-
+async function DGS10minusT10YIEObservations() {
   const result = await Promise.all([httpClient.get<IObservationsResponse>(
     "DGS10.json",
   ), httpClient.get<IObservationsResponse>(
@@ -59,7 +55,7 @@ async function DGS10minusT10YIEObservations({
   //   params: { series_id },
   // });
 
-  return data;
+  return { ...result[0].data, observations: data };
 }
 
 interface IGetObservationsProps {
@@ -89,18 +85,18 @@ export const useGetObservationsById = <
 
 
 export const useGetDGS10minusT10YIEObservations = <
-  SelectData = IObservation[],
+  SelectData = IObservationsResponse,
   Error = unknown
 >(
   options?: UseQueryOptions<
-    IObservation[],
+    IObservationsResponse,
     Error,
     SelectData,
     ReturnType<(typeof fredQueryKeys)["DGS10-T10YIE"]>
   >
 ) => {
   return useQuery<
-    IObservation[],
+    IObservationsResponse,
     Error,
     SelectData,
     ReturnType<(typeof fredQueryKeys)["DGS10-T10YIE"]>

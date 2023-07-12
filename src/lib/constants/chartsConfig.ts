@@ -15,11 +15,13 @@ export const chartConfig = {
             },
             xAxis: {
                 type: "time",
-                boundaryGap: ['2%', '0%']
+                name: "Time",
+                boundaryGap: ['0%', '0%']
             },
             yAxis: {
                 type: "value",
-                boundaryGap: ['2%', '0%']
+                name: "Percentage",
+                boundaryGap: ['0%', '0%']
             },
             dataZoom: [
                 {
@@ -60,11 +62,11 @@ export const chartConfig = {
             },
             xAxis: {
                 type: "time",
-                boundaryGap: ['2%', '0%']
+                boundaryGap: ['0%', '0%']
             },
             yAxis: {
                 type: "value",
-                boundaryGap: ['2%', '0%']
+                boundaryGap: ['0%', '0%']
             },
             dataZoom: [
                 {
@@ -104,11 +106,11 @@ export const chartConfig = {
             },
             xAxis: {
                 type: "time",
-                boundaryGap: ['2%', '0%']
+                boundaryGap: ['0%', '0%']
             },
             yAxis: {
                 type: "value",
-                boundaryGap: ['2%', '0%']
+                boundaryGap: ['0%', '0%']
             },
             dataZoom: [
                 {
