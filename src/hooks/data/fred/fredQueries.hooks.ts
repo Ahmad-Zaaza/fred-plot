@@ -4,19 +4,19 @@ import {
   UseQueryOptions,
   QueryFunctionContext,
 } from "@tanstack/react-query";
-import { IObservationsResponse, TSeriesId } from "./fred.types";
+import { IObservation, IObservationsResponse, TSeriesId } from "./fred.types";
 
 export const fredQueryKeys = {
   all: [{ scope: "plots" }] as const,
-  observations: ({ series_id }: { series_id: TSeriesId }) =>
-    [{ ...fredQueryKeys.all[0], entity: "Observations", series_id }] as const,
+  observationsById: ({ series_id }: { series_id: TSeriesId }) =>
+    [{ ...fredQueryKeys.all[0], entity: "Observations by id", series_id }] as const,
   "DGS10-T10YIE": () =>
     [{ ...fredQueryKeys.all[0], entity: "DGS10-T10YIE" }] as const,
 };
 
-async function getObservations({
+async function getObservationsById({
   queryKey: [{ series_id }],
-}: QueryFunctionContext<ReturnType<(typeof fredQueryKeys)["observations"]>>) {
+}: QueryFunctionContext<ReturnType<(typeof fredQueryKeys)["observationsById"]>>) {
   const dataSource = {
     T10Y2Y: "data.json",
     GDPCA: "GDPCA.json",
@@ -34,11 +34,39 @@ async function getObservations({
   return res.data;
 }
 
+async function DGS10minusT10YIEObservations({
+  queryKey
+}: QueryFunctionContext<ReturnType<(typeof fredQueryKeys)["DGS10-T10YIE"]>>) {
+
+
+  const result = await Promise.all([httpClient.get<IObservationsResponse>(
+    "DGS10.json",
+  ), httpClient.get<IObservationsResponse>(
+    "T10YIE.json",
+  )])
+
+  const DGS10Data = result[0].data.observations;
+
+  const T10YIEData = result[1].data.observations;
+
+  const data: IObservationsResponse['observations'] = [];
+
+  for (let index = 0; index < DGS10Data.length; index++) {
+    data.push({ ...DGS10Data[index], value: (parseFloat(DGS10Data[index].value) - parseFloat(T10YIEData[index].value)).toFixed(2) })
+  }
+
+  // const res = await httpClient.get("/series/observations", {
+  //   params: { series_id },
+  // });
+
+  return data;
+}
+
 interface IGetObservationsProps {
   series_id: TSeriesId;
 }
 
-export const useGetObservations = <
+export const useGetObservationsById = <
   SelectData = IObservationsResponse,
   Error = unknown
 >(
@@ -47,13 +75,34 @@ export const useGetObservations = <
     IObservationsResponse,
     Error,
     SelectData,
-    ReturnType<(typeof fredQueryKeys)["observations"]>
+    ReturnType<(typeof fredQueryKeys)["observationsById"]>
   >
 ) => {
   return useQuery<
     IObservationsResponse,
     Error,
     SelectData,
-    ReturnType<(typeof fredQueryKeys)["observations"]>
-  >(fredQueryKeys.observations({ series_id }), getObservations, options);
+    ReturnType<(typeof fredQueryKeys)["observationsById"]>
+  >(fredQueryKeys.observationsById({ series_id }), getObservationsById, options);
+};
+
+
+
+export const useGetDGS10minusT10YIEObservations = <
+  SelectData = IObservation[],
+  Error = unknown
+>(
+  options?: UseQueryOptions<
+    IObservation[],
+    Error,
+    SelectData,
+    ReturnType<(typeof fredQueryKeys)["DGS10-T10YIE"]>
+  >
+) => {
+  return useQuery<
+    IObservation[],
+    Error,
+    SelectData,
+    ReturnType<(typeof fredQueryKeys)["DGS10-T10YIE"]>
+  >(fredQueryKeys["DGS10-T10YIE"](), DGS10minusT10YIEObservations, options);
 };
